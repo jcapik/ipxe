@@ -1,5 +1,6 @@
 /*
  * Copyright (C) 2015 Michael Brown <mbrown@fensystems.co.uk>.
+ * Copyright (C) 2026 Jaromir Capik <jaromir.capik@email.cz>.
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License as
@@ -45,11 +46,7 @@ FILE_LICENCE ( GPL2_OR_LATER_OR_UBDL );
 
 	.section ".note.GNU-stack", "", @progbits
 	.code32
-#ifdef I386_SUPPORT
 	.arch i386
-#else
-	.arch i486
-#endif
 	.section ".prefix.lib", "ax", @progbits
 
 #ifdef CODE16
@@ -966,14 +963,9 @@ decompress:
 	ADDR32 lodsb	/* discard initial byte */
 	print_hex_byte %al
 	ADDR32 lodsl
-#ifdef I386_SUPPORT
-	/* "bswapl %eax" replacement for i386 */
 	xchgb	%al, %ah
 	roll	$16, %eax
 	xchgb	%al, %ah
-#else
-	bswapl	%eax
-#endif
 	print_hex_dword %eax
 	print_character $('\n')
 	movl	%eax, rc_code(%ebp)
